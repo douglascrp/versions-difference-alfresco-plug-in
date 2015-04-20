@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<page>
+   <title>Document Diff Details</title>
+   <title-id>page.documentdiffDetails.title</title-id>
+   <description>Document Diff details</description>
+   <description-id>page.documentdiffDetails.description</description-id>
+   <template-instance>document-diff</template-instance>
+   <authentication>user</authentication>
+</page>

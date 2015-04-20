@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- 
+/*
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+ /*
+ * Copyright (C) 2012 Marco Scapoli
+ *
+ * This file is part of Versions Difference Alfresco Plug-in.
+ *
+ *  Versions Difference Alfresco Plug-in is free software: you can redistribute 
+ *  it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Versions Difference Alfresco Plug-in is distributed in the hope
+ *  that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Versions Difference Alfresco Plug-in.
+ *  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Author  Marco Scapoli  <rianko@gmail.com>
+ *  File    versions-difference.xml
+ **/
+ -->
+
+<page>
+    <title>Versions Difference</title>
+    <description>2 columns versions difference</description>
+    <template-instance>versions-difference</template-instance>
+    <authentication>user</authentication>
+    <components>
+
+      <!-- Left Document Header -->
+      <component>
+         <region-id>left-node-header</region-id>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site header -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/node-details/node-header</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                        <rootPage>documentlibrary</rootPage>
+                        <rootLabelId>path.documents</rootLabelId>
+                     </properties>
+                  </evaluation>
+                  <!-- otherwise: Repo header -->
+                  <evaluation id="repo">
+                     <url>/components/node-details/node-header</url>
+                     <properties>
+                        <nodeRef>{nodeRef}</nodeRef>
+                        <rootPage>repository</rootPage>
+                        <rootLabelId>path.repository</rootLabelId>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
+      </component>
+      
+      <!-- Right Document Header -->
+      <component>
+         <region-id>right-node-header</region-id>
+         <sub-components>
+            <sub-component id="default">
+               <evaluations>
+                  <!-- if in site: Site header -->
+                  <evaluation id="site">
+                     <evaluators>
+                        <evaluator type="site.component.evaluator"/>
+                     </evaluators>
+                     <url>/components/node-details/node-header</url>
+                     <properties>
+                        <nodeRef>{versRef}</nodeRef>
+                        <rootPage>documentlibrary</rootPage>
+                        <rootLabelId>path.documents</rootLabelId>
+                     </properties>
+                  </evaluation>
+                  <!-- otherwise: Repo header -->
+                  <evaluation id="repo">
+                     <url>/components/node-details/node-header</url>
+                     <properties>
+                        <nodeRef>{versRef}</nodeRef>
+                        <rootPage>repository</rootPage>
+                        <rootLabelId>path.repository</rootLabelId>
+                     </properties>
+                  </evaluation>
+               </evaluations>
+            </sub-component>
+         </sub-components>
+      </component>
+      
+        <!-- Left Column -->
+        <component>
+            <region-id>left-column</region-id>
+            <url>/components/versions-diff-hook</url>
+        </component>
+
+        <!-- Right Column -->
+        <component>
+            <region-id>right-column</region-id>
+            <url>/components/versions-diff-hook</url>
+        </component>
+
+    </components>
+</page>

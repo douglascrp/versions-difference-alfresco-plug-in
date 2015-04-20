@@ -1,0 +1,149 @@
+/*
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+ /*
+ * Copyright (C) 2012 Marco Scapoli
+ *
+ * This file is part of Versions Difference Alfresco Plug-in.
+ *
+ *  Versions Difference Alfresco Plug-in is free software: you can redistribute 
+ *  it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Versions Difference Alfresco Plug-in is distributed in the hope
+ *  that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Versions Difference Alfresco Plug-in.
+ *  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Author  Marco Scapoli  <rianko@gmail.com>
+ *  File    VersionsDifferenceWebscriptTest.java
+ **/
+
+package org.alfresco.module.versionsdiff;
+
+//import org.json.JSONArray;
+//import org.json.JSONObject;
+
+import java.io.Serializable;
+
+import org.alfresco.repo.security.authentication.AuthenticationComponent;
+//import org.alfresco.repo.site.SiteModel;
+import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.site.SiteService;
+import org.alfresco.repo.web.scripts.BaseWebScriptTest;
+//import org.alfresco.util.GUID;
+//import org.springframework.extensions.webscripts.TestWebScriptServer.GetRequest;
+//import org.springframework.extensions.webscripts.TestWebScriptServer.PostRequest;
+//import org.springframework.extensions.webscripts.TestWebScriptServer.Response;
+
+import org.junit.Test;
+import org.springframework.extensions.webscripts.WebScriptException;
+import org.alfresco.model.ContentModel;
+import org.alfresco.module.versionsdiff.VersionsDifferenceWebscript;
+
+
+public class VersionsDifferenceWebscriptTest extends BaseWebScriptTest
+{
+    //private static final String URL_SITES = "/api/sites";
+    private static final String USER_ADMIN = "admin";
+    private SiteService siteService;
+    private AuthenticationComponent authenticationComponent;
+    
+    private VersionsDifferenceWebscript diffWebscriptService = new VersionsDifferenceWebscript();
+
+    public void setUp() throws Exception
+    {
+        super.setUp();
+        this.siteService = (SiteService) getServer().getApplicationContext().getBean("SiteService");
+        this.authenticationComponent = (AuthenticationComponent) getServer().getApplicationContext().getBean("authenticationComponent");
+
+        // Authenticate as user
+        this.authenticationComponent.setCurrentUser(USER_ADMIN);
+    }
+    /**
+     * @ Testing getDocumentContentString
+     */
+    public void testGetDocumentContentString() throws Exception
+    {
+        // Test NodeRef
+        String nodeTestStr = "workspace://SpacesStore/cbb63e68-9884-4d24-abb3-28aaf8677169";
+        NodeRef testNodeRef = new NodeRef(nodeTestStr);
+        
+        String fileName = "FilenameTest";
+        
+        assertFalse("".equals(diffWebscriptService.getDocumentContentString(testNodeRef, fileName)));
+    }
+    
+/*
+    public void testPostMemberships() throws Exception {
+
+        // Create a site
+        String shortName = GUID.generate();
+        siteService.createSite("myPreset", shortName, "myTitle", "myDescription", true);
+
+        // Build the JSON membership object
+        JSONObject membership = new JSONObject();
+        membership.put("role", SiteModel.SITE_CONSUMER);
+        JSONObject person = new JSONObject();
+        person.put("userName", USER_TWO);
+        membership.put("person", person);
+
+        // Post the memebership
+        Response response = sendRequest(new PostRequest(URL_SITES + "/" + shortName + URL_MEMBERSHIPS, membership.toString(), "application/json"), 200);
+        JSONObject result = new JSONObject(response.getContentAsString());
+
+        // Check the result
+        assertEquals(SiteModel.SITE_CONSUMER, membership.get("role"));
+        assertEquals(USER_TWO, membership.getJSONObject("person").get("userName"));
+
+        // Get the membership list
+        response = sendRequest(new GetRequest(URL_SITES + "/" + shortName + URL_MEMBERSHIPS), 200);
+        JSONArray result2 = new JSONArray(response.getContentAsString());
+        assertNotNull(result2);
+        assertEquals(2, result2.length());
+    }
+*/
+/*
+    public void testGetMembership() throws Exception {
+
+        // Create a site
+        String shortName = GUID.generate();
+        siteService.createSite("myPreset", shortName, "myTitle", "myDescription", true);
+
+        // Test error conditions
+        sendRequest(new GetRequest(URL_SITES + "/badsite" + URL_MEMBERSHIPS + "/" + USER_ONE), 404);
+        sendRequest(new GetRequest(URL_SITES + "/" + shortName + URL_MEMBERSHIPS + "/baduser"), 404);
+        sendRequest(new GetRequest(URL_SITES + "/" + shortName + URL_MEMBERSHIPS + "/" + USER_TWO), 404);
+
+        // Test GET Membership
+        Response response = sendRequest(new GetRequest(URL_SITES + "/" + shortName + URL_MEMBERSHIPS + "/" + USER_ONE), 200);
+        JSONObject result = new JSONObject(response.getContentAsString());
+        // Check the result
+        assertEquals(SiteModel.SITE_MANAGER, result.get("role"));
+        assertEquals(USER_ONE, result.getJSONObject("person").get("userName"));
+    }
+*/
+}

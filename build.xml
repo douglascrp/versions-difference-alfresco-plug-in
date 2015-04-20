@@ -1,0 +1,240 @@
+<?xml version="1.0"?>
+<!--  
+/*
+ * Copyright (C) 2012 Marco Scapoli
+ *
+ * This file is part of Versions Difference Alfresco Plug-in.
+ *
+ *  Versions Difference Alfresco Plug-in is free software: you can redistribute 
+ *  it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Versions Difference Alfresco Plug-in is distributed in the hope
+ *  that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Versions Difference Alfresco Plug-in.
+ *  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Heavily based on tasso9000 example code:
+ *               at http://experiencewithalfresco.blogspot.dk/2012/06/type-subcomponent-evaluator.html
+ *               
+ *  Author  Martin Bergljung
+ *          Revisited by: Marco Scapoli  <rianko@gmail.com>
+ *
+ *          Version: 1.0
+ *
+ *  File    build.xml
+ **/
+
+    Follow an example of a conventional classpath structure
+        
+        /alfresco
+            /config <> All web-tier configuration files, e.g. web scripts and Surf configuration
+                /alfresco
+                    /extension
+                    /module
+                /META-INF
+            /lib
+            /src
+                /java <> All static resource files, e.g. CSS, JS
+                /javascript
+            /test
+                /lib <> e.g: junit-4.4.jar
+            /web
+                /css
+                /images
+                /jsp
+                /scripts
+        /share
+            /config
+                /alfresco
+                    /messages
+                    /site-data
+                    /site-webscript
+                    /templates
+                    /web-extension
+                        /site-webscripts    <> for your customization of pre existing Alfresco files
+                /META-INF
+                    /components
+            /lib    <> e.g: yuicompressor-2.4.8.jar
+            /src
+                /java
+                    /org
+                        /alfresco
+                            /cms
+                                /documentlibrary
+                                    /evaluator  <> for sub-component evaluator class
+        /build.xml - This file
+-->
+
+<project name="Alfresco Extensions Build File" default="deploy-all-files" basedir=".">
+    <property file="build-${user.name}.properties"/>
+    <property file="build.properties"/>
+
+    <property name="config.alfresco.dir" value="${alfresco.ext.dir}/config"/>
+    <property name="config.share.dir" value="${share.ext.dir}/config"/>
+    <property name="source.alfresco.dir" value="${alfresco.ext.dir}/src/java"/>
+    <property name="source.share.dir" value="${share.ext.dir}/src/java"/>
+    <property name="testsource.alfresco.dir" value="${alfresco.ext.dir}/test/java"/>
+    <property name="classes.alfresco.dir" value="${build.dir}/classes"/>
+    <property name="classes.share.dir" value="${build.dir}/classes_share"/>
+    <property name="lib.share.dir" value="${share.ext.dir}/lib"/>
+
+    <path id="src.classpath">
+        <dirset dir="${build.dir}"/>
+        <fileset dir="${alfresco.sdk.dir}/lib/server" includes="**/*.jar"/>
+        <fileset dir="${alfresco.sdk.dir}/lib/remote" includes="**/*.jar"/>
+        <fileset dir="${alfresco.ext.dir}/lib" includes="**/*.jar"/>
+    </path>
+
+    <path id="test.classpath">
+        <path refid="src.classpath"/>
+        <fileset dir="${alfresco.ext.dir}/test/lib" includes="**/*.jar"/>
+    </path>
+
+    <target name="mkdirs">
+        <mkdir dir="${build.dir}/dist"/>
+        <mkdir dir="${build.dir}/lib"/>
+        <mkdir dir="${classes.alfresco.dir}"/>
+        <mkdir dir="${classes.share.dir}"/>
+    </target>
+
+    <target name="clean">
+        <delete quiet="yes" includeEmptyDirs="true" dir="${build.dir}"/>
+    </target>
+
+    <target name="clean-reset-war">
+        <echo>Deleting ${tomcat.webapps.dir}/alfresco dir and copying back original alfresco.war from alfresco.war.bak
+        </echo>
+        <available file="${alfresco.war.file}.bak" type="file" property="alfresco.war.bak.present"/>
+        <fail unless="alfresco.war.bak.present"
+              message="Could not find ${alfresco.war.file}.bak, please copy alfresco.war to alfresco.war.bak"/>
+        <delete quiet="yes" file="${alfresco.war.file}"/>
+        <delete quiet="yes" includeEmptyDirs="true" dir="${tomcat.webapps.dir}/alfresco"/>
+        <copy file="${alfresco.war.file}.bak" tofile="${alfresco.war.file}"/>
+    </target>
+
+    <target name="compile">
+        <javac classpathref="src.classpath"
+               srcdir="${source.alfresco.dir}"
+               destdir="${classes.alfresco.dir}"
+               debug="true"
+               debuglevel="lines,vars,source"
+        	   includeantruntime="false"/>
+    </target>
+
+    <target name="compile-test">
+        <javac classpathref="test.classpath"
+               srcdir="${testsource.alfresco.dir}"
+               destdir="${classes.alfresco.dir}"
+        	   includeantruntime="false"/>
+    </target>
+
+    <target name="compile-share">
+        <javac classpathref="src.classpath"
+               srcdir="${source.share.dir}"
+               destdir="${classes.share.dir}"
+               debug="true"
+               debuglevel="lines,vars,source"
+        	   includeantruntime="false"/>
+    </target>
+
+    <target name="package-alfresco-jar" depends="clean, mkdirs, compile">
+        <echo>Packaging extension JAR for AMP</echo>
+        <jar destfile="${alfresco.jar.file}">
+            <zipfileset dir="${classes.alfresco.dir}" includes="**/*.class"/>
+            <zipfileset dir="${source.alfresco.dir}" includes="**/*.xml,**/*.properties"/>
+        </jar>
+    </target>
+
+    <target name="package-alfresco-amp" depends="package-alfresco-jar">
+        <echo>Packaging extension AMP file for alfresco.war</echo>
+        <zip destfile="${alfresco.amp.file}">
+            <zipfileset dir="${project.dir}/build" includes="lib/*.jar"/>
+            <zipfileset dir="${project.dir}" includes="lib/*.jar"/>
+            <zipfileset dir="${alfresco.ext.dir}" includes="config/**/*.*"
+                        excludes="**/module.properties,**/file-mapping.properties"/>
+            <zipfileset dir="${config.alfresco.dir}/alfresco/module/${module.id}"
+                        includes="module.properties,file-mapping.properties"/>
+            <zipfileset dir="${alfresco.ext.dir}" includes="web/**/*.*"/>
+        </zip>
+    </target>
+    <!--
+    <target name="merge-alfresco-amp" depends="clean-reset-war, package-alfresco-amp">
+        <echo>Merges extension AMP file into build/webapps/alfresco.war</echo>
+        <java dir="." fork="true" classname="org.alfresco.repo.module.tool.ModuleManagementTool">
+            <classpath refid="src.classpath"/>
+            <arg line="install ${alfresco.amp.file} ${alfresco.war.file} -force -verbose -nobackup"/>
+        </java>
+    </target>
+    -->
+    <target name="js.minify">
+        <apply executable="java" parallel="false">
+            <fileset dir="." includes="**/*-custom.js"/>
+            <arg line="-jar"/>
+            <arg path="share/lib/yuicompressor-2.4.8pre.jar"/>
+            <srcfile/>
+            <arg line="-o"/>
+            <mapper type="glob" from="*.js" to="*-min.js"/>
+            <targetfile/>
+        </apply>
+    </target>
+
+    <target name="css.minify">
+        <apply executable="java" parallel="false">
+            <fileset dir="." includes="**/*-custom.css"/>
+            <arg line="-jar"/>
+            <arg path="share/lib/yuicompressor-2.4.8pre.jar"/>
+            <arg line="--line-break 0"/>
+            <srcfile/>
+            <arg line="-o"/>
+            <mapper type="glob" from="*.css" to="*-min.css"/>
+            <targetfile/>
+        </apply>
+    </target>
+
+    <target name="package-share-jar" depends="clean, mkdirs, compile-share, js.minify, css.minify">
+        <echo>Packaging extension JAR file for share.war</echo>
+        <delete file="${share.jar.file}"/>
+        <jar destfile="${share.jar.file}">
+            <zipfileset dir="${config.share.dir}" includes="**/*.*"/>
+            <zipfileset dir="${classes.share.dir}" includes="**/*.class"/>
+        </jar>
+    </target>
+
+    <target name="deploy-share-jar" depends="package-share-jar">
+        <echo>Copies extension JAR file to share.war WEB-INF lib</echo>
+        <copy file="${share.jar.file}" todir="${tomcat.webapps.dir}/share/WEB-INF/lib"/>
+    	<copy todir="${tomcat.webapps.dir}/share/WEB-INF/lib">
+            <fileset dir="${lib.share.dir}" includes="*.jar"/>
+        </copy>
+    </target>
+
+    <target name="unit-test" depends="compile, compile-test">
+        <echo>Running all the JUnit tests</echo>
+        <junit showoutput="yes" haltonfailure="yes" fork="on">
+            <formatter type="plain"/>
+            <classpath refid="test.classpath"/>
+            <batchtest>
+                <fileset dir="${classes.alfresco.dir}" casesensitive="no">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="deploy-all-files" depends="package-share-jar, package-alfresco-amp">
+        <echo>Copies extension JAR file to share.war WEB-INF/lib</echo>
+        <copy file="${share.jar.file}" todir="${tomcat.dir}/webapps/share/WEB-INF/lib"/>
+        <echo>Copies extension AMP file to ${alfresco.dir}/amps</echo>
+        <copy file="${alfresco.amp.file}" todir="${alfresco.dir}/amps"/>
+    	<echo>Packaging AMP and JAR files and deploy all, Done!</echo>
+    </target>
+
+</project>

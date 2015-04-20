@@ -1,0 +1,130 @@
+/*
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco
+ *
+ * Alfresco is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Alfresco is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Alfresco. If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+/*
+ * Copyright (C) 2012 Marco Scapoli
+ *
+ * This file is part of Versions Difference Alfresco Plug-in.
+ *
+ *  Versions Difference Alfresco Plug-in is free software: you can redistribute 
+ *  it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Versions Difference Alfresco Plug-in is distributed in the hope
+ *  that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Versions Difference Alfresco Plug-in.
+ *  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Author  Marco Scapoli  <rianko@gmail.com>
+ *  File    document-versions-diff-custom.css
+ **/
+
+.document-versions .version-panel-left {
+	float: left;
+}
+
+.document-versions .version-panel-right {
+	border-left: 1px solid #ccc;
+	margin-left: 2.5em;
+	padding-left: 0.5em;
+}
+
+.document-versions .h4 {
+	clear: both;
+}
+
+.document-versions .version-list {
+	margin-bottom: 1.5em;
+	margin-top: 0.5em;
+}
+
+.document-versions h2 .edit {
+	background-image: url(images/document-upload-new-version-16.png);
+}
+
+.document-versions .version-list h3 {
+	margin-bottom: 0.5em;
+	float: left;
+	width: auto;
+}
+
+.document-versions .version-list h3 .document-version {
+	margin-right: 0.8em;
+}
+
+.document-versions .actions {
+	float: right;
+	width: 5em;
+	text-align: right;
+}
+
+.document-versions .current-version .actions {
+	display: none;
+}
+
+.document-versions .actions a {
+	background-repeat: no-repeat;
+	background-position: left;
+	padding: 0.5em;
+	text-decoration: none;
+}
+
+.document-versions .actions a.download {
+	background-image: url(images/document-download-16.png);
+}
+
+.document-versions .actions a.historicProperties {
+	background-image: url(images/document-view-metadata-16.png);
+}
+
+.document-versions .actions a.revert {
+	background-image: url(images/revert-16.png);
+}
+
+.document-versions .actions a.versionsDiff {
+	padding-bottom: 1em;
+	background-image: url(images/versions-diff-ico-16.png);
+}
+
+.document-versions .version-details-left {
+	float: left;
+}
+
+.document-versions .version-details-right {
+	margin-left: 40px;
+}
+
+.document-versions  .alfresco-datatable td {
+	border-bottom: medium none !important;
+}
+
+.document-versions  .alfresco-datatable td .yui-dt-liner {
+	padding: 4px 0 10px;
+}
+
+div.revert-version.yui-panel div.hd {
+	padding-right: 32px;
+}
